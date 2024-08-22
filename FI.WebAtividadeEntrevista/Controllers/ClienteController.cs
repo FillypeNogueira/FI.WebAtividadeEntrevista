@@ -27,6 +27,12 @@ namespace WebAtividadeEntrevista.Controllers
         {
             BoCliente bo = new BoCliente();
 
+            if (!bo.ValidarCPF(model.CPF))
+            {
+                Response.StatusCode = 400;
+                return Json("CPF inválido. Por favor, verifique os dados e tente novamente.");
+            }
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
