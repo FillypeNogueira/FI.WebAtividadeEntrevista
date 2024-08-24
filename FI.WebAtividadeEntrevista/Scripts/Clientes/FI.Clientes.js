@@ -74,9 +74,20 @@ $(document).ready(function () {
         });
     }
 
+    // Validação de CPF no formato 000.000.000-00
+    function validarCPF(cpf) {
+        var regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+        return regex.test(cpf);
+    }
+
     $("#adicionarBeneficiario").click(function () {
         var nome = $("#beneficiarioNome").val().trim();
         var cpf = $("#beneficiarioCPF").val().trim();
+
+        if (!validarCPF(cpf)) {
+            alert("CPF inválido. Por favor, use o formato 000.000.000-00.");
+            return;
+        }
 
         if (beneficiarios.some(b => b.cpf === cpf)) {
             alert("Já existe um beneficiário com esse CPF.");

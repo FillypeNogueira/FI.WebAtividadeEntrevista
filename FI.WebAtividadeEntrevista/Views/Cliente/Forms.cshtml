@@ -100,21 +100,33 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalBeneficiariosLabel">Beneficiários</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div class="row w-100">
+                        <div class="col-md-10">
+                            <h4 class="modal-title" id="modalBeneficiariosLabel">Beneficiários</h4>
+                        </div>
+                        <div class="col-md-2 text-right">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-body">
                     <form id="formBeneficiario">
-                        <div class="form-group">
-                            <label for="beneficiarioCPF">CPF:</label>
-                            <input type="text" class="form-control" id="beneficiarioCPF" placeholder="Ex.: 010.011.111-00" maxlength="11" required>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="beneficiarioCPF">CPF:</label>
+                                <input type="text" class="form-control" id="beneficiarioCPF" placeholder="Ex.: 010.011.111-00" maxlength="50" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="beneficiarioNome">Nome:</label>
+                                <input type="text" class="form-control" id="beneficiarioNome" placeholder="Ex.: Maria" maxlength="50" required>
+                            </div>
+                            <div class="col-md-2 align-self-end">
+                                <label>&nbsp;</label> 
+                                <button type="button" class="btn btn-success text-white w-100" id="adicionarBeneficiario">Incluir</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="beneficiarioNome">Nome:</label>
-                            <input type="text" class="form-control" id="beneficiarioNome" placeholder="Ex.: Maria" maxlength="15">
-                        </div>
-
-                        <button type="button" class="btn btn-primary" id="adicionarBeneficiario">Inserir</button>
                     </form>
 
                     <hr>
@@ -130,9 +142,6 @@
                         <tbody>
                         </tbody>
                     </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
