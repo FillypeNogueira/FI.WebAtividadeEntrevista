@@ -25,7 +25,7 @@ namespace FI.WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Incluir(BeneficiarioModel model)
+        public JsonResult Incluir(long clienteId, BeneficiarioModel model)
         {
             Bo bo = new Bo();
             BoBeneficiario boBeneficiario = new BoBeneficiario();
@@ -50,18 +50,20 @@ namespace FI.WebAtividadeEntrevista.Controllers
                 if (boBeneficiario.VerificarExistencia(model.CPF))
                 {
                     Response.StatusCode = 400;
-                    return Json("O CPF informado já pertence a um beneficiario. Insira um CPF válido");
+                    return Json("O CPF informado já pertence a um beneficiário. Insira um CPF válido");
                 }
 
                 model.Id = boBeneficiario.Incluir(new Beneficiario()
                 {
                     Nome = model.Nome,
-                    CPF = model.CPF
+                    CPF = model.CPF,
+                    /*IdCliente = clienteId*/
                 });
 
-                return Json("Cadastro efetuado com sucesso");
+                return Json("Cadastro de beneficiário efetuado com sucesso");
             }
         }
+
 
         [HttpPost]
         public JsonResult Alterar(BeneficiarioModel model)
