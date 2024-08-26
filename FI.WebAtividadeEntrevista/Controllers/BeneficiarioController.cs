@@ -25,12 +25,13 @@ namespace FI.WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Incluir(long clienteId, BeneficiarioModel model)
+        public JsonResult Incluir(string clienteCPF, long Id, string Nome, string CPF)
         {
             Bo bo = new Bo();
+            BoCliente boCliente = new BoCliente();
             BoBeneficiario boBeneficiario = new BoBeneficiario();
 
-            if (!bo.ValidarCPF(model.CPF))
+            if (!bo.ValidarCPF(CPF))
             {
                 Response.StatusCode = 400;
                 return Json("CPF inválido. Por favor, verifique os dados e tente novamente.");
@@ -47,17 +48,13 @@ namespace FI.WebAtividadeEntrevista.Controllers
             }
             else
             {
-                if (boBeneficiario.VerificarExistencia(model.CPF))
-                {
-                    Response.StatusCode = 400;
-                    return Json("O CPF informado já pertence a um beneficiário. Insira um CPF válido");
-                }
 
-                model.Id = boBeneficiario.Incluir(new Beneficiario()
+                Cliente cliente = boCliente.Consultar(clienteCPF);
+                Id = boBeneficiario.Incluir(new Beneficiario()
                 {
-                    Nome = model.Nome,
-                    CPF = model.CPF,
-                    /*IdCliente = clienteId*/
+                    Nome = Nome,
+                    CPF = CPF,
+                    IdCliente = cliente.Id
                 });
 
                 return Json("Cadastro de beneficiário efetuado com sucesso");
@@ -85,8 +82,7 @@ namespace FI.WebAtividadeEntrevista.Controllers
                 {
                     Id = model.Id,
                     Nome = model.Nome,
-                    CPF = model.CPF,
-                    IdCliente = ""
+                    CPF = model.CPF
                 });
 
                 return Json("Cadastro alterado com sucesso");
@@ -96,24 +92,27 @@ namespace FI.WebAtividadeEntrevista.Controllers
         [HttpGet]
         public ActionResult Alterar(long id)
         {
-            BoBeneficiario bo = new BoBeneficiario();
-            Beneficiario beneficiario = bo.Consultar(id);
-            BeneficiarioModel model = null;
+            //BoBeneficiario bo = new BoBeneficiario();
+            //Beneficiario beneficiario = bo.Consultar(id);
+            //BeneficiarioModel model = null;
 
-            if (beneficiario != null)
-            {
-                model = new BeneficiarioModel()
-                {
-                    Id = beneficiario.Id,
-                    Nome = beneficiario.Nome,
-                    CPF = beneficiario.CPF,
-                    IdCliente = ""
-                };
+            //if (beneficiario != null)
+            //{
+            //    model = new BeneficiarioModel()
+            //    {
+            //        Id = id,
+            //        Nome = beneficiario.Nome,
+            //        CPF = beneficiario.CPF,
+            //        IdCliente = beneficiario.IdCliente
+            //    };
 
 
-            }
+            //}
 
-            return View(model);
+            //return View(model);
+
+            return Json("");
+
         }
 
         [HttpPost]

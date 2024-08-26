@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using System.Reflection;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -23,10 +24,24 @@ namespace WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Incluir(ClienteModel model)
+        public JsonResult Incluir(long Id, string CEP, string Cidade,  string Email, string Estado, string Logradouro, string Nacionalidade, string Nome, string Sobrenome, string Telefone, string CPF)
         {
             Bo bo = new Bo();
             BoCliente boClient = new BoCliente();
+
+            ClienteModel model = new ClienteModel(
+                Id = Id,
+                CEP = CEP,
+                Cidade  = Cidade,
+                Email = Email,
+                Estado = Estado,
+                Logradouro = Logradouro,
+                Nacionalidade = Nacionalidade,
+                Nome = Nome,
+                Sobrenome = Sobrenome,
+                Telefone = Telefone,
+                CPF = CPF
+                );
 
             if (!bo.ValidarCPF(model.CPF))
             {
@@ -107,31 +122,32 @@ namespace WebAtividadeEntrevista.Controllers
         [HttpGet]
         public ActionResult Alterar(long id)
         {
-            BoCliente bo = new BoCliente();
-            Cliente cliente = bo.Consultar(id);
-            Models.ClienteModel model = null;
+            //BoCliente bo = new BoCliente();
+            //Cliente cliente = bo.Consultar(id);
+            //Models.ClienteModel model = null;
 
-            if (cliente != null)
-            {
-                model = new ClienteModel()
-                {
-                    Id = cliente.Id,
-                    CEP = cliente.CEP,
-                    Cidade = cliente.Cidade,
-                    Email = cliente.Email,
-                    Estado = cliente.Estado,
-                    Logradouro = cliente.Logradouro,
-                    Nacionalidade = cliente.Nacionalidade,
-                    Nome = cliente.Nome,
-                    Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone,
-                    CPF = cliente.CPF
-                };
+            //if (cliente != null)
+            //{
+            //    model = new ClienteModel()
+            //    {
+            //        Id = cliente.Id,
+            //        CEP = cliente.CEP,
+            //        Cidade = cliente.Cidade,
+            //        Email = cliente.Email,
+            //        Estado = cliente.Estado,
+            //        Logradouro = cliente.Logradouro,
+            //        Nacionalidade = cliente.Nacionalidade,
+            //        Nome = cliente.Nome,
+            //        Sobrenome = cliente.Sobrenome,
+            //        Telefone = cliente.Telefone,
+            //        CPF = cliente.CPF
+            //    };
 
-            
-            }
 
-            return View(model);
+            //}
+
+            //return View(model);
+            return Json("Teste");
         }
 
         [HttpPost]
