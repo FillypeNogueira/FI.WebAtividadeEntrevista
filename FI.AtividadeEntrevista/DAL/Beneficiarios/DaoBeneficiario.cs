@@ -138,7 +138,7 @@ namespace FI.AtividadeEntrevista.DAL.Beneficiario
                     ben.Id = row.Field<long>("Id");
                     ben.Nome = row.Field<string>("Nome");
                     ben.CPF = row.Field<string>("CPF");
-                    ben.IdCliente = row.Field<string>("IdCliente");
+                    ben.IdCliente = row.Field<long>("IdCliente");
                     lista.Add(ben);
                 }
             }

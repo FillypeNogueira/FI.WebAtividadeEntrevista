@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace FI.WebAtividadeEntrevista.Models
 {
@@ -12,6 +14,13 @@ namespace FI.WebAtividadeEntrevista.Models
     /// </summary>
     public class BeneficiarioModel
     {
+        public BeneficiarioModel(long Id, string Nome, string CPF, long IdCliente)
+        {
+            Id = Id;
+            Nome = Nome;
+            CPF = CPF;
+            IdCliente = IdCliente;
+        }
         public long Id { get; set; }
       
         /// <summary>
@@ -31,6 +40,6 @@ namespace FI.WebAtividadeEntrevista.Models
         /// IdCliente
         /// </summary>
         [Required]
-        public string IdCliente { get; set; }
+        public long IdCliente { get; set; }
     }
 }

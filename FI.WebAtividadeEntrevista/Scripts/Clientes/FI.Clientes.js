@@ -25,7 +25,9 @@
 
     $("#adicionarBeneficiario").click(function () {
         var nome = $("#beneficiarioNome").val().trim();
+        console.log("Nome :", nome);
         var cpf = $("#beneficiarioCPF").val().trim();
+        console.log("CPF: ", cpf);
 
         if (!validarCPF(cpf)) {
             alert("CPF inválido. Por favor, use o formato 000.000.000-00.");
@@ -44,6 +46,65 @@
         $("#beneficiarioNome").val('');
         $("#beneficiarioCPF").val('');
     });
+
+    document.getElementById("SalvarId").addEventListener("click", () => {
+        
+
+        const IdNumber = $("#CPF").val();
+        const IdFormated = IdNumber.replace(".", "").replace("-", "");
+        console.log(IdFormated.replace(".", ""));
+        fetch('/Cliente/Incluir', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Id: IdFormated.replace(".", ""),
+                CEP: $("#CEP").val(),
+                Cidade: $("#Cidade").val(),
+                Email: $("#Email").val(),
+                Estado: $("#Estado").val(),
+                Logradouro: $("#Logradouro").val(),
+                Nacionalidade: $("#Nacionalidade").val(),
+                Nome: $("#Nome").val(),
+                Sobrenome: $("#Sobrenome").val(),
+                Telefone: $("#Telefone").val(),
+                CPF: $("#CPF").val() 
+            })
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Erro ao adicionar cliente!");
+            }
+            return response.json();
+        }).then(data => {
+            adicionarBeneficiarioBD($("#CPF").val());
+        }).catch(error => {
+            console.log("Error: ", error);
+        })
+
+    })
+
+    function adicionarBeneficiarioBD(CPF) {
+        console.log(beneficiarios);
+        for (let i = 0; i < beneficiarios.length; i++) {
+            const IdNumber = beneficiarios[i].cpf;
+            const IdFormated = IdNumber.replace(".", "").replace("-", "");
+            fetch('/Beneficiario/Incluir', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    clienteCPF: CPF,
+                    Id: IdFormated.replace(".", ""),
+                    Nome: `${beneficiarios[i].nome}`,
+                    CPF: `${beneficiarios[i].cpf}`
+                })
+            })
+        }
+    }
+
+    
 
     window.alterarBeneficiario = function (index) {
         var beneficiario = beneficiarios[index];
