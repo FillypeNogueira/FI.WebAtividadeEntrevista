@@ -1,65 +1,5 @@
-﻿
-$(document).ready(function () {
-    $('#formCadastro').submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: urlPost,
-            method: "POST",
-            data: {
-                "NOME": $(this).find("#Nome").val(),
-                "CEP": $(this).find("#CEP").val(),
-                "Email": $(this).find("#Email").val(),
-                "Sobrenome": $(this).find("#Sobrenome").val(),
-                "Nacionalidade": $(this).find("#Nacionalidade").val(),
-                "Estado": $(this).find("#Estado").val(),
-                "Cidade": $(this).find("#Cidade").val(),
-                "Logradouro": $(this).find("#Logradouro").val(),
-                "Telefone": $(this).find("#Telefone").val(),
-                "CPF": $(this).find("#CPF").val()
-            },
-            error:
-            function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            },
-            success:
-            function (r) {
-                ModalDialog("Sucesso!", r)
-                $("#formCadastro")[0].reset();
-            }
-        });
-    })
-    
-})
-
-function ModalDialog(titulo, texto) {
-    var random = Math.random().toString().replace('.', '');
-    var texto = '<div id="' + random + '" class="modal fade">                                                               ' +
-        '        <div class="modal-dialog">                                                                                 ' +
-        '            <div class="modal-content">                                                                            ' +
-        '                <div class="modal-header">                                                                         ' +
-        '                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>         ' +
-        '                    <h4 class="modal-title">' + titulo + '</h4>                                                    ' +
-        '                </div>                                                                                             ' +
-        '                <div class="modal-body">                                                                           ' +
-        '                    <p>' + texto + '</p>                                                                           ' +
-        '                </div>                                                                                             ' +
-        '                <div class="modal-footer">                                                                         ' +
-        '                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>             ' +
-        '                                                                                                                   ' +
-        '                </div>                                                                                             ' +
-        '            </div><!-- /.modal-content -->                                                                         ' +
-        '  </div><!-- /.modal-dialog -->                                                                                    ' +
-        '</div> <!-- /.modal -->                                                                                        ';
-
-    $('body').append(texto);
-    $('#' + random).modal('show');
-}
-
-$(document).ready(function () {
-    var beneficiarios = [];
+﻿$(document).ready(function () {
+    var beneficiarios = []; // beneficiarios como variável global - detalhe
 
     function atualizarTabelaBeneficiarios() {
         var tabela = $("#tabelaBeneficiarios tbody");
@@ -119,107 +59,13 @@ $(document).ready(function () {
         atualizarTabelaBeneficiarios();
     };
 
-    $('#formCadastro').submit(function (e) {
-        e.preventDefault();
-
-        var clienteData = {
-            "NOME": $(this).find("#Nome").val(),
-            "CEP": $(this).find("#CEP").val(),
-            "Email": $(this).find("#Email").val(),
-            "Sobrenome": $(this).find("#Sobrenome").val(),
-            "Nacionalidade": $(this).find("#Nacionalidade").val(),
-            "Estado": $(this).find("#Estado").val(),
-            "Cidade": $(this).find("#Cidade").val(),
-            "Logradouro": $(this).find("#Logradouro").val(),
-            "Telefone": $(this).find("#Telefone").val(),
-            "CPF": $(this).find("#CPF").val(),
-            "Beneficiarios": beneficiarios // Adiciona a lista de beneficiários
-        };
-
-        $.ajax({
-            url: urlPost,
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(clienteData),
-            error: function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            },
-            success: function (r) {
-                ModalDialog("Sucesso!", r);
-                $("#formCadastro")[0].reset();
-                window.location.href = urlRetorno;
-            }
-        });
-    });
-});
-
-$(document).ready(function () {
-    $('#formCadastro').submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-            url: urlPost,
-            method: "POST",
-            data: {
-                "NOME": $(this).find("#Nome").val(),
-                "CEP": $(this).find("#CEP").val(),
-                "Email": $(this).find("#Email").val(),
-                "Sobrenome": $(this).find("#Sobrenome").val(),
-            },
-            success: function (data) {
-                alert("Cliente cadastrado com sucesso!");
-
-                // Limpa os campos do formulário após a inserção
-                $('#formCadastro')[0].reset();
-
-                // Atualizar o grid de beneficiários
-                atualizarGridBeneficiarios();
-            },
-            error: function (data) {
-                alert("Erro ao cadastrar o cliente: " + data.responseText);
-            }
-        });
-    });
-
-    $('#btnInserirBeneficiario').click(function () {
-        let nome = $('#NomeBeneficiario').val();
-        let cpf = $('#CPFBeneficiario').val();
-
-        $.ajax({
-            url: '/Beneficiario/Incluir',  // URL do seu controller para adicionar o beneficiário
-            method: "POST",
-            data: {
-                Nome: nome,
-                CPF: cpf,
-                IdCliente: clienteId // ID do cliente
-            },
-            success: function (response) {
-                alert(response); // Mensagem de sucesso
-
-                // Atualiza o grid de beneficiários
-                atualizarGridBeneficiarios();
-
-                // Limpa os campos do modal após a inserção
-                $('#NomeBeneficiario').val('');
-                $('#CPFBeneficiario').val('');
-            },
-            error: function (xhr) {
-                alert(xhr.responseText); // Mensagem de erro
-            }
-        });
-    });
-
+    // Atualiza o grid de beneficiários
     function atualizarGridBeneficiarios() {
         $.ajax({
-            url: '/Beneficiario/BeneficiarioList',  // URL da controller para listar beneficiários
+            url: '/Beneficiario/BeneficiarioList',
             method: 'POST',
             success: function (data) {
-                // Limpa o grid
                 $('#beneficiarioGrid').empty();
-
-                // Renderiza os novos beneficiários no grid
                 data.Records.forEach(function (beneficiario) {
                     $('#beneficiarioGrid').append(
                         '<tr>' +
@@ -234,5 +80,62 @@ $(document).ready(function () {
             }
         });
     }
+
+    $('#formCadastro').submit(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: urlPost,
+            method: "POST",
+            contentType: 'application/json', // Define o tipo de conteúdo como JSON
+            data: JSON.stringify({
+                "NOME": $("#Nome").val(),
+                "CEP": $("#CEP").val(),
+                "Email": $("#Email").val(),
+                "Sobrenome": $("#Sobrenome").val(),
+                "Nacionalidade": $("#Nacionalidade").val(),
+                "Estado": $("#Estado").val(),
+                "Cidade": $("#Cidade").val(),
+                "Logradouro": $("#Logradouro").val(),
+                "Telefone": $("#Telefone").val(),
+                "CPF": $("#CPF").val(),
+                "Beneficiarios": beneficiarios
+            }),
+            success: function (response) {
+                ModalDialog("Sucesso!", response);
+                $("#formCadastro")[0].reset();
+                beneficiarios = []; // Limpa a lista de beneficiários após salvar
+                atualizarTabelaBeneficiarios(); // Atualiza a tabela para exibir a lista vazia
+            },
+            error: function (r) {
+                if (r.status == 400)
+                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                else if (r.status == 500)
+                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+            }
+        });
+    });
 });
 
+function ModalDialog(titulo, texto) {
+    var random = Math.random().toString().replace('.', '');
+    var dialogHtml = '<div id="' + random + '" class="modal fade">' +
+        '<div class="modal-dialog">' +
+        '<div class="modal-content">' +
+        '<div class="modal-header">' +
+        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+        '<h4 class="modal-title">' + titulo + '</h4>' +
+        '</div>' +
+        '<div class="modal-body">' +
+        '<p>' + texto + '</p>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+        '<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+    $('body').append(dialogHtml);
+    $('#' + random).modal('show');
+}
