@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    var beneficiarios = []; // beneficiarios como variável global
+    var beneficiarios = [];
 
     function atualizarTabelaBeneficiarios() {
         var tabela = $("#tabelaBeneficiarios tbody");
@@ -28,12 +28,12 @@
         var cpf = $("#beneficiarioCPF").val().trim();
 
         if (!validarCPF(cpf)) {
-            alert("CPF inválido. Por favor, use o formato 000.000.000-00.");
+            ModalDialog("CPF Inválido", "CPF inválido. Por favor, use o formato 000.000.000-00.");
             return;
         }
 
         if (beneficiarios.some(b => b.cpf === cpf)) {
-            alert("Já existe um beneficiário com esse CPF.");
+            ModalDialog("CPF Duplicado", "Já existe um beneficiário com esse CPF.");
             return;
         }
 
@@ -73,7 +73,14 @@
             }
             return response.json();
         }).then(data => {
-            adicionarBeneficiarioBD($("#CPF").val());
+            if (beneficiarios.length > 0) {
+                adicionarBeneficiarioBD($("#CPF").val());
+            } else {
+                ModalDialog("Sucesso!", "Cliente adicionado com sucesso.");
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
         }).catch(error => {
             console.log("Error: ", error);
         });

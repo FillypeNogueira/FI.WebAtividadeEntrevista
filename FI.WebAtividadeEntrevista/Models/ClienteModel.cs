@@ -11,21 +11,6 @@ namespace WebAtividadeEntrevista.Models
     /// </summary>
     public class ClienteModel
     {
-        public ClienteModel(long id, string cEP, string cidade, string email, string estado, string logradouro, string nacionalidade, string nome, string sobrenome, string telefone, string cPF)
-        {
-            Id = id;
-            CEP = cEP;
-            Cidade = cidade;
-            Email = email;
-            Estado = estado;
-            Logradouro = logradouro;
-            Nacionalidade = nacionalidade;
-            Nome = nome;
-            Sobrenome = sobrenome;
-            Telefone = telefone;
-            CPF = cPF;
-        }
-
         public long Id { get; set; }
         
         /// <summary>
