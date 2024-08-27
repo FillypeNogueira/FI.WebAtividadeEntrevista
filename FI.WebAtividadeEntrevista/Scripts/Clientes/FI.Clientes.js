@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    var beneficiarios = []; // beneficiarios como variável global - detalhe
+    var beneficiarios = []; // beneficiarios como variável global
 
     function atualizarTabelaBeneficiarios() {
         var tabela = $("#tabelaBeneficiarios tbody");
@@ -25,9 +25,7 @@
 
     $("#adicionarBeneficiario").click(function () {
         var nome = $("#beneficiarioNome").val().trim();
-        console.log("Nome :", nome);
         var cpf = $("#beneficiarioCPF").val().trim();
-        console.log("CPF: ", cpf);
 
         if (!validarCPF(cpf)) {
             alert("CPF inválido. Por favor, use o formato 000.000.000-00.");
@@ -48,11 +46,9 @@
     });
 
     document.getElementById("SalvarId").addEventListener("click", () => {
-        
-
         const IdNumber = $("#CPF").val();
         const IdFormated = IdNumber.replace(".", "").replace("-", "");
-        console.log(IdFormated.replace(".", ""));
+
         fetch('/Cliente/Incluir', {
             method: 'POST',
             headers: {
@@ -69,7 +65,7 @@
                 Nome: $("#Nome").val(),
                 Sobrenome: $("#Sobrenome").val(),
                 Telefone: $("#Telefone").val(),
-                CPF: $("#CPF").val() 
+                CPF: $("#CPF").val()
             })
         }).then(response => {
             if (!response.ok) {
@@ -80,16 +76,13 @@
             adicionarBeneficiarioBD($("#CPF").val());
         }).catch(error => {
             console.log("Error: ", error);
-        })
-
-    })
+        });
+    });
 
     function adicionarBeneficiarioBD(CPF) {
-        console.log(beneficiarios);
-        for (let i = 0; i < beneficiarios.length; i++) {
-            const IdNumber = beneficiarios[i].cpf;
-            const IdFormated = IdNumber.replace(".", "").replace("-", "");
-            fetch('/Beneficiario/Incluir', {
+        const requests = beneficiarios.map(beneficiario => {
+            const IdFormated = beneficiario.cpf.replace(".", "").replace("-", "");
+            return fetch('/Beneficiario/Incluir', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -97,14 +90,29 @@
                 body: JSON.stringify({
                     clienteCPF: CPF,
                     Id: IdFormated.replace(".", ""),
-                    Nome: `${beneficiarios[i].nome}`,
-                    CPF: `${beneficiarios[i].cpf}`
+                    Nome: beneficiario.nome,
+                    CPF: beneficiario.cpf
                 })
-            })
-        }
-    }
+            });
+        });
 
-    
+        Promise.all(requests)
+            .then(responses => {
+                responses.forEach(response => {
+                    if (!response.ok) {
+                        throw new Error("Erro ao adicionar Beneficiário!");
+                    }
+                });
+                // Exibe mensagem de sucesso e recarrega a página
+                ModalDialog("Sucesso!", "Cliente e beneficiários adicionados com sucesso.");
+                setTimeout(() => {
+                    location.reload();
+                }, 2000); // Delay de 2 segundos para exibir a mensagem antes de recarregar
+            })
+            .catch(error => {
+                console.log("Error: ", error);
+            });
+    }
 
     window.alterarBeneficiario = function (index) {
         var beneficiario = beneficiarios[index];
@@ -119,63 +127,6 @@
         beneficiarios.splice(index, 1);
         atualizarTabelaBeneficiarios();
     };
-
-    // Atualiza o grid de beneficiários
-    function atualizarGridBeneficiarios() {
-        $.ajax({
-            url: '/Beneficiario/BeneficiarioList',
-            method: 'POST',
-            success: function (data) {
-                $('#beneficiarioGrid').empty();
-                data.Records.forEach(function (beneficiario) {
-                    $('#beneficiarioGrid').append(
-                        '<tr>' +
-                        '<td>' + beneficiario.Nome + '</td>' +
-                        '<td>' + beneficiario.CPF + '</td>' +
-                        '</tr>'
-                    );
-                });
-            },
-            error: function (xhr) {
-                alert("Erro ao carregar beneficiários: " + xhr.responseText);
-            }
-        });
-    }
-
-    $('#formCadastro').submit(function (e) {
-        e.preventDefault();
-
-        $.ajax({
-            url: urlPost,
-            method: "POST",
-            contentType: 'application/json', // Define o tipo de conteúdo como JSON
-            data: JSON.stringify({
-                "NOME": $("#Nome").val(),
-                "CEP": $("#CEP").val(),
-                "Email": $("#Email").val(),
-                "Sobrenome": $("#Sobrenome").val(),
-                "Nacionalidade": $("#Nacionalidade").val(),
-                "Estado": $("#Estado").val(),
-                "Cidade": $("#Cidade").val(),
-                "Logradouro": $("#Logradouro").val(),
-                "Telefone": $("#Telefone").val(),
-                "CPF": $("#CPF").val(),
-                "Beneficiarios": beneficiarios
-            }),
-            success: function (response) {
-                ModalDialog("Sucesso!", response);
-                $("#formCadastro")[0].reset();
-                beneficiarios = []; // Limpa a lista de beneficiários após salvar
-                atualizarTabelaBeneficiarios(); // Atualiza a tabela para exibir a lista vazia
-            },
-            error: function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            }
-        });
-    });
 });
 
 function ModalDialog(titulo, texto) {
